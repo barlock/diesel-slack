@@ -1,0 +1,78 @@
+name: Lunch Train
+type: flow
+nodes:
+  /lunchtrain:
+    type: start
+    recieve:
+      - type: slack.command
+        spec:
+          command: /lunchtrain
+        middleware:
+        - recieveLunchtrain
+        next:
+        - boardRequest
+        - conductorControls
+  boardRequest:
+    type: slack.message
+    spec:
+      template: boardRequest
+      to:
+        channel: <% slack.command.channel_id %>
+        update: true
+    recieve:
+      - type: slack.action
+        spec:
+          type: button
+          name: board
+        middleware:
+        - addToTrain
+        next:
+        - boardRequest
+        - passengerUpdate
+        - conductorControls
+  conductorControls:
+    type: slack.message
+    spec:
+      template: conductorControls
+      to:
+        user: ${command.user_id}
+        update: true
+    recieve:
+      - type: slack.action
+        spec:
+          type: button
+          name: delay
+        middleware:
+        - delayTrain
+        next:
+        - boardRequest
+        - passengerUpdate
+        - conductorControls
+      - type: slack.action
+        spec:
+          type: button
+          name: cancel
+        middleware:
+        - cancelTrain
+        next:
+        - boardRequest
+        - passengerUpdate
+        - conductorControls
+  passengerUpdate:
+    type: slack.mesage
+    spec:
+      template: passengerUpdate
+      to:
+        users: ${train.onBoard}
+        update: true
+    recieve:
+      - type: slack.action
+        spec:
+          type: button
+          name: getOff
+        middleware:
+        - getOffTrain
+        next:
+        - boardRequest
+        - passengerUpdate
+        - conductorControls
