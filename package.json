@@ -19,7 +19,8 @@
     "body-parser": "^1.18.2",
     "diesel-engine": "^0.1.0",
     "express": "^4.16.2",
-    "material-ui": "^0.20.0"
+    "material-ui": "^0.20.0",
+    "pluralize": "^7.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -28,6 +29,7 @@
     "babel-preset-react": "^6.24.1",
     "nodemon": "^1.14.12",
     "react": "^16.2.0",
+    "require-directory": "^2.1.1",
     "slack-react": "^0.2.0"
   }
 }

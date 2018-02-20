@@ -1,78 +1,69 @@
-name: Lunch Train
-type: flow
-nodes:
-  /lunchtrain:
-    type: start
-    recieve:
-      - type: slack.command
-        spec:
-          command: /lunchtrain
-        middleware:
-        - recieveLunchtrain
-        next:
-        - boardRequest
-        - conductorControls
-  boardRequest:
-    type: slack.message
-    spec:
-      template: boardRequest
-      to:
-        channel: <% slack.command.channel_id %>
-        update: true
-    recieve:
-      - type: slack.action
-        spec:
-          type: button
-          name: board
-        middleware:
-        - addToTrain
-        next:
-        - boardRequest
-        - passengerUpdate
-        - conductorControls
-  conductorControls:
-    type: slack.message
-    spec:
-      template: conductorControls
-      to:
-        user: ${command.user_id}
-        update: true
-    recieve:
-      - type: slack.action
-        spec:
-          type: button
-          name: delay
-        middleware:
-        - delayTrain
-        next:
-        - boardRequest
-        - passengerUpdate
-        - conductorControls
-      - type: slack.action
-        spec:
-          type: button
-          name: cancel
-        middleware:
-        - cancelTrain
-        next:
-        - boardRequest
-        - passengerUpdate
-        - conductorControls
-  passengerUpdate:
-    type: slack.mesage
-    spec:
-      template: passengerUpdate
-      to:
-        users: ${train.onBoard}
-        update: true
-    recieve:
-      - type: slack.action
-        spec:
-          type: button
-          name: getOff
-        middleware:
-        - getOffTrain
-        next:
-        - boardRequest
-        - passengerUpdate
-        - conductorControls
+---
+name: /lunchtrain
+states:
+  - name: start
+    start: true
+    accepts:
+    - type: slack.command
+      spec:
+        command: /lunchtrain
+      middleware:
+      - startTrain
+      next: waitForDepature
+  - name: waitForDepature
+    actions:
+      - ConductorControls
+      - BoardRequest
+#      - PassengerUpdate
+    accepts:
+    - type: slack.button
+      spec:
+        name: passengerBoard
+      middleware:
+      - addPassengerToTrain
+      next: waitForDepature
+    - type: slack.button
+      spec:
+        name: delayTrain
+      middleware:
+      - delayTrain
+      next: waitForDepature
+    - type: slack.button
+      spec:
+        name: cancelTrain
+      middleware:
+      - cancelTrain
+      next: end
+  - name: end
+    end: true
+    actions:
+    - ConductorControls
+    - BoardRequest
+    - PassengerUpdates
+---
+name: ConductorControls
+action:
+  type: slack.message
+  spec:
+    template: conductorControls
+    to:
+      user: $.train.conductor # or "$.slack.commands[0].userId"
+      update: true
+---
+name: PassengerUpdates
+action:
+  type: slack.message
+  spec:
+    template: passengerUpdate
+    to:
+      users: $.train.passengers
+      update: true
+---
+name: BoardRequest
+action:
+  type: slack.message
+  spec:
+    template: boardRequest
+    to:
+      channel: $.train.channel # or "$.slack.commands[0].channelId"
+      update: true
