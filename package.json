@@ -20,7 +20,8 @@
     "diesel-engine": "^0.1.0",
     "express": "^4.16.2",
     "material-ui": "^0.20.0",
-    "pluralize": "^7.0.0"
+    "pluralize": "^7.0.0",
+    "slack": "^11.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

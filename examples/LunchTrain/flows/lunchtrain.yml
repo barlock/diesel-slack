@@ -43,7 +43,7 @@ states:
 ---
 name: ConductorControls
 action:
-  type: slack.message
+  type: slack.directMessage
   spec:
     template: conductorControls
     to:
@@ -52,7 +52,7 @@ action:
 ---
 name: PassengerUpdates
 action:
-  type: slack.message
+  type: slack.directMessage
   spec:
     template: passengerUpdate
     to:
@@ -61,7 +61,7 @@ action:
 ---
 name: BoardRequest
 action:
-  type: slack.message
+  type: slack.postMessage
   spec:
     template: boardRequest
     to:
