@@ -1,6 +1,6 @@
 {
   "name": "diesel-slack",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Slack plugin for Diesel",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "dependencies": {
     "axios": "^0.17.1",
     "body-parser": "^1.18.2",
-    "diesel-engine": "^0.1.0",
+    "diesel-engine": "^0.2.0",
     "express": "^4.16.2",
     "material-ui": "^0.20.0",
     "pluralize": "^7.0.0",
@@ -31,6 +31,6 @@
     "nodemon": "^1.14.12",
     "react": "^16.2.0",
     "require-directory": "^2.1.1",
-    "slack-react": "^0.2.0"
+    "slack-react": "^0.2.1"
   }
 }
