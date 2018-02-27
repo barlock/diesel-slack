@@ -1,6 +1,6 @@
 {
   "name": "diesel-slack",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Slack plugin for Diesel",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "body-parser": "^1.18.2",
     "diesel-engine": "^0.2.0",
     "express": "^4.16.2",
+    "lodash": "^4.17.5",
     "material-ui": "^0.20.0",
     "pluralize": "^7.0.0",
     "slack": "^11.0.0"
