@@ -1,10 +1,11 @@
 {
   "name": "diesel-slack",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Slack plugin for Diesel",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "nodemon examples/LunchTrain/index --exec babel-node",
+    "build": "babel lib -d dist",
     "build-dev": "babel examples/LunchTrain -d build/LunchTrain",
     "test": "echo \"Error: no test specified\""
   },
@@ -16,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.17.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "body-parser": "^1.18.2",
     "camelcase-keys": "^4.2.0",
     "diesel-engine": "^0.2.0",
