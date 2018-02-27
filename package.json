@@ -1,6 +1,6 @@
 {
   "name": "diesel-slack",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Slack plugin for Diesel",
   "main": "index.js",
   "scripts": {
