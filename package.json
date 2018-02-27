@@ -1,6 +1,6 @@
 {
   "name": "diesel-slack",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Slack plugin for Diesel",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^0.17.1",
     "body-parser": "^1.18.2",
+    "camelcase-keys": "^4.2.0",
     "diesel-engine": "^0.2.0",
     "express": "^4.16.2",
     "lodash": "^4.17.5",
