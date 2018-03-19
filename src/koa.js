@@ -13,7 +13,11 @@ module.exports = (engine, app = new Koa()) => {
 
   const verifyToken = async (ctx, next) => {
     const token = engine._verifyToken;
-    const body = ctx.request.body;
+    let body = ctx.request.body;
+
+    if (body.payload) {
+      body = JSON.parse(body.payload);
+    }
 
     if (!token) {
       throw new Error("No verify token provided, can't verify request");
@@ -23,7 +27,7 @@ module.exports = (engine, app = new Koa()) => {
       ctx.throw(403, "Invalid verify token");
     }
 
-    console.log('Slack Event ', JSON.stringify(body))
+    console.log('Slack:', JSON.stringify(body));
 
     await next();
   };
@@ -38,9 +42,13 @@ module.exports = (engine, app = new Koa()) => {
         body: ctx.request.body
       };
 
-      await engine.dispatch(action);
+      await Promise.race([
+        engine.dispatch(action),
+        wait(2500)
+      ]);
 
-      ctx.body = action.response;
+      ctx.body = "";
+      ctx.response.status = 202;
 
       await next();
     });
@@ -58,8 +66,28 @@ module.exports = (engine, app = new Koa()) => {
       } else {
         engine.dispatch(action);
 
+        ctx.body = '';
         ctx.response.status = 202;
       }
+
+      await next();
+    });
+
+  router.post('/slack/action',
+    verifyToken,
+    async (ctx, next) => {
+      const action = Object.assign({
+        type: 'action',
+        body: ctx.request.body
+      });
+
+      await Promise.race([
+        engine.dispatch(action),
+        wait(2500)
+      ]);
+
+      ctx.body = "";
+      ctx.response.status = 202;
 
       await next();
     });

@@ -1,14 +1,15 @@
 'use strict';
 
 const path = require('path');
-const { Engine } = require('../../src');
+const { Engine, simpleFileStore } = require('../../src');
 const port = process.env.PORT || 8080;
 
 (async () => {
   const engine = new Engine({
     verifyToken: process.env.SLACK_VERIFY_TOKEN,
     appToken: process.env.SLACK_APP_TOKEN,
-    botToken: process.env.SLACK_BOT_TOKEN
+    botToken: process.env.SLACK_BOT_TOKEN,
+    store: simpleFileStore()
   });
 
   require("./flows/lunchtrain")(engine);

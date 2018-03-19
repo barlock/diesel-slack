@@ -14,6 +14,7 @@ class Engine {
     this._middleware = [];
     this._flows = [];
     this._verifyToken = opts.verifyToken;
+    this._store = opts.store;
 
     const token = opts.botToken || opts.appToken;
 
@@ -48,8 +49,11 @@ class Engine {
     this._middleware.push(middleware);
   }
 
-  flow (name, opts) {
-    const flow = new Flow(name, opts);
+  flow (name, initialState) {
+    const flow = new Flow(name, {
+      initialState,
+      store: this._store
+    });
 
     this._flows.push(flow);
 
@@ -68,7 +72,7 @@ class Engine {
         }, null);
 
         if (handler) {
-          await handler();
+          await handler(action);
         }
 
         await next();

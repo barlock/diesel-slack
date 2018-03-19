@@ -18,13 +18,16 @@
   "dependencies": {
     "axios": "^0.17.1",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "fs-extra": "^5.0.0",
+    "jfs": "^0.3.0",
     "koa": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
     "koa-compose": "^4.0.0",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.5",
     "slack": "^11.0.0",
-    "uid-safe": "^2.1.5"
+    "uid-safe": "^2.1.5",
+    "util-promisify": "^2.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -33,6 +36,6 @@
     "nodemon": "^1.14.12",
     "react": "^16.2.0",
     "require-directory": "^2.1.1",
-    "slack-react": "^0.2.1"
+    "slack-react": "^0.2.8"
   }
 }

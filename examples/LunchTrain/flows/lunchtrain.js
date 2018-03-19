@@ -18,13 +18,13 @@ module.exports = engine => {
   const flow = engine.flow("/lunchtrain", initialState);
 
   flow.command("/lunchtrain", async (action) => {
-    const { body, state} = action;
+    const { body, state, slack } = action;
 
     state.conductor = {
       id: body.user_id
     };
 
-    action.response = await messages.boardRequest(body, state);
+    slack.respond(await messages.boardRequest(action));
   });
 
   flow.button("passengerBoard", async ({ slack, event, state }) => {
