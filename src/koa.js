@@ -15,10 +15,6 @@ module.exports = (engine, app = new Koa()) => {
     const token = engine._verifyToken;
     let body = ctx.request.body;
 
-    if (body.payload) {
-      body = JSON.parse(body.payload);
-    }
-
     if (!token) {
       throw new Error("No verify token provided, can't verify request");
     }
@@ -74,6 +70,10 @@ module.exports = (engine, app = new Koa()) => {
     });
 
   router.post('/slack/action',
+    async (ctx, next) => {
+      ctx.request.body = JSON.parse(ctx.request.body.payload);
+      await next();
+    },
     verifyToken,
     async (ctx, next) => {
       const action = Object.assign({

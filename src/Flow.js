@@ -3,8 +3,8 @@
 const compose = require('koa-compose');
 const uid = require('uid-safe');
 
-function hasButtonAction (actions) {
-  return !!actions.find(action => action.type === "button")
+function getButtonAction (actions = []) {
+  return actions.find(action => action.type === "button")
 }
 
 class Flow {
@@ -70,14 +70,20 @@ class Flow {
     const fn = action => {
       const { type, body } = action;
       const bodyActions = body.actions;
+      const buttonAction = getButtonAction(bodyActions);
 
       if (type === "action" &&
         body.type === "interactive_message" &&
-        hasButtonAction(bodyActions)) {
-
-        // If it matches the name, value, then go forth!
+        buttonAction && buttonAction.name.match(name) &&
+        buttonAction.value.match(value))
+      {
+        return callback.bind(null, action)
       }
-    }
+    };
+
+    this.match(fn);
+
+    return this;
   }
 
   match (fn) {

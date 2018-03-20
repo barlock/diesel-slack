@@ -3,26 +3,33 @@ import PropTypes from "prop-types";
 import { render, components} from "slack-react";
 const { Message, Attachment, Button, User } = components;
 
-const ConductorControls = ({ train }) => {
-  const { place, time, passengers } = train;
+const ConductorControls = ({ id, state }) => {
+  const { place, time, passengers } = state;
 
   return (
     <Message>
-      <Attachment fallback="Let your passengers know it's time to leave" color="#f6ba52">
-        You started a train to {place} at {time}.
-        { passengers.length > 0 ? passengers
-          .map(passenger => <User key={passenger.id} id={passenger.id}/>) : "No one "} are on board.
+      <Attachment
+        callback_id={id}
+        fallback="Let your passengers know it's time to leave"
+        color="#f6ba52">
+        You started a train to {place} at {`<!date^${time}^{time}|${time}>`}.
+        { passengers.length > 0 ?
+          passengers
+            .map((passenger) => <User key={passenger.id} id={passenger.id}/>)
+            .reduce((prev, curr) => [prev, ', ', curr])
+            .concat([" are on board."])
+          : null}
 
-        <Button name="delay">Delay 10 min</Button>
-        <Button name="cancel">Cancel Train</Button>
+        <Button name="delayTrain">Delay 10 min</Button>
+        <Button name="cancelTrain">Cancel Train</Button>
       </Attachment>
     </Message>
   );
 };
 
 ConductorControls.propTypes = {
-    train: PropTypes.object.isRequired
+  state: PropTypes.object.isRequired
 };
 
-export default (action, context) =>
-  render(React.createElement(ConductorControls, context));
+export default (action) =>
+  render(React.createElement(ConductorControls, action));

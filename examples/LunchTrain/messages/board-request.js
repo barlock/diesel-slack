@@ -11,12 +11,16 @@ const BoardReqest = ({ id, state }) => {
         callbackId={id}
         fallback="To board the train, DM the conductor"
         color="#f6ba52">
-        Choo choo! <User id={conductor.id}/> started a train to {place} at {time}.
-        { passengers.length > 0 ? passengers
-          .map((passenger) => <User key={passenger.id} id={passenger.id}/>)
+        Choo choo! <User id={conductor.id}/> started a train to {place} at {`<!date^${time}^{time}|${time}>`}.
+        {'\n'}
+        { passengers.length > 0 ?
+          passengers
+            .map((passenger) => <User key={passenger.id} id={passenger.id}/>)
+            .reduce((prev, curr) => [prev, ', ', curr])
+            .concat([" are on board."])
           : null} Will you join?
 
-        <Button name="board">Board the Train</Button>
+        <Button name="passengerBoard">Board the Train</Button>
       </Attachment>
     </Message>
   );
