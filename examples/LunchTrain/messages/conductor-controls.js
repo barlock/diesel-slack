@@ -9,14 +9,13 @@ const ConductorControls = ({ id, state }) => {
   return (
     <Message>
       <Attachment
-        callback_id={id}
+        callbackId={id}
         fallback="Let your passengers know it's time to leave"
         color="#f6ba52">
         You started a train to {place} at {`<!date^${time}^{time}|${time}>`}.
         { passengers.length > 0 ?
           passengers
             .map((passenger) => <User key={passenger.id} id={passenger.id}/>)
-            .reduce((prev, curr) => [prev, ', ', curr])
             .concat([" are on board."])
           : null}
 

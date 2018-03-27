@@ -23,8 +23,6 @@ module.exports = (engine, app = new Koa()) => {
       ctx.throw(403, "Invalid verify token");
     }
 
-    console.log('Slack:', JSON.stringify(body));
-
     await next();
   };
 

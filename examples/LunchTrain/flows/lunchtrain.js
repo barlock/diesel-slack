@@ -5,7 +5,6 @@ const messages = require("../messages");
 const initialState = {
   conductor: {},
   place: 'Super Duper',
-  time: Math.floor(Date.now()/ 1000),
   passengers: []
 };
 
@@ -14,6 +13,8 @@ module.exports = engine => {
 
   flow.command("/lunchtrain", async (action) => {
     const { body, state } = action;
+
+    state.time = Math.floor(Date.now() / 1000);
 
     state.conductor = {
       id: body.user_id,
@@ -36,19 +37,39 @@ module.exports = engine => {
     await sendAndUpdateTrainStatus(action);
   });
 
-  flow.button("delayTrain", async ({ slack, body, state}) => {
+  flow.button("delayTrain", async (action) => {
+    const { state } = action;
+
     state.time = time + new Date("10 min");
 
-    await sendAndUpdateTrainStatus(slack, body, state);
+    await sendAndUpdateTrainStatus(action);
   });
 
-  flow.button("cancelTrain", async ({ body, state, slack }) => {
+  flow.button("cancelTrain", async (action) => {
+    const { state } = action;
+
     state.isCanceled = true;
 
-    await sendAndUpdateTrainStatus(slack, body, state);
+    await sendAndUpdateTrainStatus(action);
+  });
+
+  flow.button("getOffTrain", async (action) => {
+    const { body, state, slack } = action;
+
+    state.passengers = state.passengers
+      .filter(passenger => passenger.id !== body.user.id );
+
+    // Update the removed passenger
+    await sendOrUpdateMessage(
+      slack,
+      await messages.passengerInfo(action),
+      await getUserDmChannel(slack, body.user.id),
+      body.message_ts
+    );
+
+    await sendAndUpdateTrainStatus(action);
   });
 };
-
 
 async function sendOrUpdateMessage (slack, msg, channel, ts) {
   if (ts) {
@@ -66,7 +87,7 @@ async function sendOrUpdateMessage (slack, msg, channel, ts) {
 
     return sent.ts;
   }
-};
+}
 
 async function getUserDmChannel (slack, id) {
   const open = await slack.conversations.open({ users: id});
@@ -100,26 +121,14 @@ async function sendAndUpdateTrainStatus (action) {
     );
   });
 
+  actions.concat(state.passengers.map(async (passenger) => {
+    passenger.ts = await sendOrUpdateMessage(
+      slack,
+      await messages.passengerInfo(action),
+      await getUserDmChannel(slack, passenger.id),
+      passenger.ts
+    )
+  }));
+
   await Promise.all(actions.map(fn => fn()));
-
-  // actions.concat(state.passengers.map(async (passenger) => {
-  //   if (!passenger.channel) {
-  //     const open = slack.conversations.open({ users: passenger.id});
-  //
-  //     if (!open.ok) {
-  //       throw new Error(open.message);
-  //     }
-  //
-  //     passenger.channel = open.channel.id;
-  //   }
-  //
-  //   await sendOrUpdateMessage(
-  //     await messages.passengerInfo(body, state),
-  //     passenger.channel,
-  //     passenger
-  //   )
-  // }));
-
 }
-
-

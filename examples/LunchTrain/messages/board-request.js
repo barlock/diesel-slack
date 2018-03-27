@@ -16,7 +16,6 @@ const BoardReqest = ({ id, state }) => {
         { passengers.length > 0 ?
           passengers
             .map((passenger) => <User key={passenger.id} id={passenger.id}/>)
-            .reduce((prev, curr) => [prev, ', ', curr])
             .concat([" are on board."])
           : null} Will you join?
 
